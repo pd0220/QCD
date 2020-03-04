@@ -8,15 +8,14 @@
 #include <vector>
 
 // read given file
-template <typename T1>
-std::vector<T1> readFile(std::string fileName)
+std::vector<double> readFile(std::string fileName)
 {
     // string for lines
     std::string line;
 
     // data structure to store data
     int length = 0;
-    std::vector<T1> dataStructure(length, 0);
+    std::vector<double> dataStructure(length, 0);
 
     // start reading
     std::ifstream fileToRead;
@@ -27,9 +26,8 @@ std::vector<T1> readFile(std::string fileName)
         // read line by line
         while (std::getline(fileToRead, line))
         {
-            //std::cout << line << std::endl;
             // convert string to numbers and push to vector
-            dataStructure.push_back(static_cast<T1>(line));
+            dataStructure.push_back(std::stod(line));
         }
         // close file
         fileToRead.close();
@@ -41,6 +39,7 @@ std::vector<T1> readFile(std::string fileName)
         std::exit(-1);
     }
 
+    // return raw data
     return dataStructure;
 }
 
@@ -64,8 +63,8 @@ int main(int argc, char **argv)
         std::exit(-1);
     }
 
-    std::cout << fileName << std::endl;
-
+    // create container for raw data
     std::vector<double> rawData = readFile(fileName);
+
     return 0;
 }
