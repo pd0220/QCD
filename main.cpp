@@ -126,7 +126,7 @@ int main(int argc, char **argv)
     // calculete variance
     double var = variance(subsetMeans, N, estimator);
 
-    // check if bias to calculated or not
+    // check if bias to be calculated or not
     if (argc > 2)
     {
         std::string ifBias = argv[2];
