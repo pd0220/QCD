@@ -49,7 +49,8 @@ std::vector<double> readFile(std::string fileName)
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 // calculate estimator from given set of data (over the whole set)... simply mean
-double mean(std::vector<double> rawData)
+template <typename T>
+auto mean(std::vector<T> rawData)
 {
     // mean
     return std::accumulate(rawData.begin(), rawData.end(), 0.) / static_cast<double>(rawData.size());
@@ -58,22 +59,25 @@ double mean(std::vector<double> rawData)
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 // calculate variance for jackknife method
-double variance(std::vector<double> subsetMeans, double N, double estimator)
+template <typename T1, typename T2, typename T3>
+auto variance(std::vector<T1> subsetMeans, T2 N, T3 estimator)
 {
+    using R = decltype(subsetMeans[0] + N + estimator);
     // calculate pre-factor
-    double preFactor = (N - 1) / N;
+    R preFactor = (N - 1) / N;
     // calculate sum
-    auto add_square = [estimator](double sum, int i) {auto d = i - estimator; return sum + d * d; };
+    auto add_square = [estimator](R sum, R i) {auto d = i - estimator; return sum + d * d; };
     return preFactor * std::accumulate(subsetMeans.begin(), subsetMeans.end(), 0.0, add_square);
 }
 
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 // taking out the nth value from the full set and returning the subset
-std::vector<double> jackknifeCut(std::vector<double> rawData, int n)
+template<typename T>
+auto jackknifeCut(std::vector<T> rawData, int n)
 {
     // copy the whole set
-    std::vector subSet = rawData;
+    std::vector<T> subSet = rawData;
     // erase nth value from copy
     subSet.erase(subSet.begin() + n);
     // return subset
@@ -133,7 +137,7 @@ int main(int argc, char **argv)
         {
             // calculate bias
             double bias = mean(subsetMeans);
-
+        
             // calculate unbiased estimator
             double estimatorUnbiased = estimator - (N - 1) * (bias - estimator);
 
