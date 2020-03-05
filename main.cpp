@@ -117,13 +117,10 @@ int main(int argc, char **argv)
     // empty vector
     std::vector<double> subsetMeans(0, 0);
 
-    double test = 0;
-
     // jackknife subsets
     for (int i = 0; i < N; i++)
     {
         subsetMeans.push_back(mean(jackknifeCut(rawData, i)));
-        test += (subsetMeans[i] - estimator) * (subsetMeans[i] - estimator);
     }
 
     // calculete variance
