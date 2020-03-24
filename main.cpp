@@ -64,7 +64,7 @@ auto variance(std::vector<T1> subsetMeans, T2 N, T3 estimator)
 {
     using R = decltype(subsetMeans[0] + N + estimator);
     // calculate pre-factor
-    R preFactor = (N - 1) / N;
+    auto preFactor = (R)(N - 1) / N;
     // calculate sum
     auto add_square = [estimator](R sum, R i) {auto d = i - estimator; return sum + d * d; };
     return preFactor * std::accumulate(subsetMeans.begin(), subsetMeans.end(), 0.0, add_square);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     // file name
     std::string fileName = "None";
     // number of blocks
-    double numOfBlocks = 0;
+    int numOfBlocks = 0;
 
     // check for arguments
     if (argc > 2)
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
     // create container for raw data
     std::vector<double> rawData = readFile(fileName);
     // size of vector
-    double sizeOfData = static_cast<int>(rawData.size());
+    int sizeOfData = static_cast<int>(rawData.size());
 
     // error check
     if (sizeOfData < numOfBlocks)
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
     }
 
     // number of values in a given block (not the last)
-    double numOfValsInBlock = static_cast<int>(std::floor(sizeOfData / numOfBlocks));
+    int numOfValsInBlock = static_cast<int>(std::floor(sizeOfData / numOfBlocks));
 
     // calculate estimator from full set of data
     double estimator = mean(rawData);
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
         subsetMeans[n] = mean(jackknifeCut(rawData, n, numOfValsInBlock));
     }
     // last block might be longer, acting accordingly
-    double numOfValsInLastBlock = static_cast<double>(sizeOfData - (numOfBlocks - 1) * numOfValsInBlock);
+    int numOfValsInLastBlock = static_cast<double>(sizeOfData - (numOfBlocks - 1) * numOfValsInBlock);
     subsetMeans[numOfBlocks - 1] = mean(jackknifeCut(rawData, numOfBlocks, numOfValsInBlock, numOfValsInLastBlock));
 
 
