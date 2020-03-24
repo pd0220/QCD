@@ -177,11 +177,13 @@ int main(int argc, char **argv)
             // calculate unbiased estimator
             double estimatorUnbiased = estimator - (numOfBlocks - 1) * (bias - estimator);
 
+            // return unbiased estimator
             std::cout << "The unbiased estimator is: " << estimatorUnbiased << " with s.d.: " << std::sqrt(var) << std::endl;
         }
     }
     else
     {
+        // return estimator
         std::cout << "The estimator is: " << estimator << " with s.d.: " << std::sqrt(var) << std::endl;
     }
 
