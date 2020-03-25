@@ -187,5 +187,12 @@ int main(int argc, char **argv)
         std::cout << "The estimator is: " << estimator << " with s.d.: " << std::sqrt(var) << std::endl;
     }
 
+    // write means to screen
+    for (int i{0}; i < numOfBlocks; i++)
+    {
+        std::cout << subsetMeans[i] << " ";
+    }
+    std::cout << "\n";
+
     return 0;
 }
