@@ -73,27 +73,17 @@ auto variance(std::vector<T1> subsetMeans, T2 N, T3 estimator)
 // -----------------------------------------------------------------------------------------------------------------------------------
 
 // taking out the nth block from the full set and returning the subset
-template<typename T>
-auto jackknifeCut(std::vector<T> const& rawData, int n, int numOfValsInBlock)
+template <typename T>
+auto jackknifeCut(std::vector<T> const &rawData, int n, int numOfValsInBlock)
 {
     // copy the whole set
     std::vector<T> subSet = rawData;
     // erase nth block from copy
     subSet.erase(subSet.begin() + n * numOfValsInBlock, subSet.begin() + (n + 1) * numOfValsInBlock);
-    // return subset
-    return subSet;
-}
 
-// jackknife cut for last block int the set (still returning subset) --> function overload
-template<typename T>
-auto jackknifeCut(std::vector<T> const& rawData, int numOfBlocks, int numOfValsInBlocks, int numOfValsInLastBlock)
-{
-    // copy the whole set
-    std::vector<T> subSet = rawData;
-    // helper number
-    int helper = (numOfBlocks - 1) * numOfValsInBlocks;
-    // erase last block from copy
-    subSet.erase(subSet.begin() + helper, subSet.begin() + helper + numOfValsInLastBlock);
+    std::cout << n << " " << subSet.size () << std::endl;
+
+    // return subset
     return subSet;
 }
 
@@ -131,36 +121,31 @@ int main(int argc, char **argv)
 
     // create container for raw data
     std::vector<double> rawData = readFile(fileName);
+
+    //throw away (erase) the first values to get equally sized blocks
+    rawData.erase(rawData.begin(), rawData.begin() + static_cast<int>(rawData.size()) % numOfBlocks);
+
     // size of vector
     int sizeOfData = static_cast<int>(rawData.size());
 
-    // error check
-    if (sizeOfData < numOfBlocks)
-    {
-        std::cout << "Too many blocks are given." << std::endl;
-        std::exit(-1);
-    }
-
-    // number of values in a given block (not the last)
-    int numOfValsInBlock = static_cast<int>(std::floor(sizeOfData / numOfBlocks));
+    // number of values in a given block
+    int numOfValsInBlock = (int)sizeOfData / numOfBlocks;
 
     // calculate estimator from full set of data
     double estimator = mean(rawData);
-
 
     // create blocks always taking out the nth block and calculate means
     // vector for block means
     std::vector<double> subsetMeans(numOfBlocks, 0.);
 
     // jackknife blocks and means until last block
-    for (int n{0}; n < numOfBlocks - 1; n++)
+    for (int n{0}; n < numOfBlocks; n++)
     {
         subsetMeans[n] = mean(jackknifeCut(rawData, n, numOfValsInBlock));
     }
     // last block might be longer, acting accordingly
-    int numOfValsInLastBlock = static_cast<double>(sizeOfData - (numOfBlocks - 1) * numOfValsInBlock);
-    subsetMeans[numOfBlocks - 1] = mean(jackknifeCut(rawData, numOfBlocks, numOfValsInBlock, numOfValsInLastBlock));
-
+    //int numOfValsInLastBlock = static_cast<double>(sizeOfData - (numOfBlocks - 1) * numOfValsInBlock);
+    //subsetMeans[numOfBlocks - 1] = mean(jackknifeCut(rawData, numOfBlocks, numOfValsInBlock, numOfValsInLastBlock));
 
     // calculete variance
     double var = variance(subsetMeans, numOfBlocks, estimator);
@@ -173,7 +158,7 @@ int main(int argc, char **argv)
         {
             // calculate bias
             double bias = mean(subsetMeans);
-        
+
             // calculate unbiased estimator
             double estimatorUnbiased = estimator - (numOfBlocks - 1) * (bias - estimator);
 
