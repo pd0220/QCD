@@ -143,10 +143,7 @@ int main(int argc, char **argv)
     {
         subsetMeans[n] = mean(jackknifeCut(rawData, n, numOfValsInBlock));
     }
-    // last block might be longer, acting accordingly
-    //int numOfValsInLastBlock = static_cast<double>(sizeOfData - (numOfBlocks - 1) * numOfValsInBlock);
-    //subsetMeans[numOfBlocks - 1] = mean(jackknifeCut(rawData, numOfBlocks, numOfValsInBlock, numOfValsInLastBlock));
-
+    
     // calculete variance
     double var = variance(subsetMeans, numOfBlocks, estimator);
 
